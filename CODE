@@ -1,0 +1,113 @@
+# BILL MANAGEMENT SYSTEM
+import mysql.connector
+import datetime
+import os
+import time
+db = mysql.connector.connect(host="localhost",user="root",passwd="",
+database="Customers")
+#check database is connected
+if db.is_connected():
+  print("Database: 'Customers' connected")
+mycursor = mydb.cursor()
+print("\n")
+print("WELCOME TO BILL MANAGEMENT SYSTEM")
+print("\n")
+# Loop keeps running until user decides to exit
+current_table = ""
+while(1):
+  time.sleep(10)
+  os.system('clear')
+  print("\n")
+  print("1: CREATE A NEW TABLE FOR CUSTOMER")
+  print("2: DISPLAY TABLES OF DATABASE")
+  print("3: SHOW FIELDS OF THE TABLE")
+  print("4: DISPLAY ALL PRODUCTS IN THE TABLE")
+  print("5: ADD A NEW PRODUCT")
+  print("6: DELETE A PRODUCT")
+  print("7: DISPLAY TOTAL AMOUNT")
+  print("8: EXIT")
+  print("\n")
+  choice = int(input("ENTER YOUR CHOICE: "))
+  time.sleep(10)
+  os.system('clear')
+  print("\n")
+  if (choice == 1):
+  # Create a new table
+	 	 try:
+	 	 	 input = str(input(“Enter Customer Name: “))
+	 	 	 # Append customer name and date to create the table name
+	 	 	 bill_date = datetime.datetime.now()
+	 	 	 name = input + "_" + str(bill_date.day) + "_" + str(bill_date.month) + "_" + str(bill_date.year)
+	 	 	 current_table = name
+	 	 	 sql = "CREATE TABLE %s (Product_ID int(4) PRIMARY KEY,Product_Name varchar(15) NOT NULL, Quantity int(4), Total_Price float(4));"%name	 	
+	 	 	 mycursor.execute(sql)
+	 	 	 db.commit()
+	 	 except:
+	 	 	 print("Unforseen Error!")
+  elif (choice == 2):
+  # Display tables of the database
+	 	 try:
+			
+	 	 	 mycursor.execute("SHOW TABLES")
+	 	 	 for i in cursor:
+	 	 	 	 print(i)
+	 	 except:
+			
+	 	 	 print("Unforseen Error!")
+  elif (choice == 3):
+  # Show fields of the table
+	 	 try:
+	 	 	 mycursor.execute("DESC %s”%current_table)
+	 	 	 for i in cursor:
+	 	 	 	 print(i)
+	 	 except:
+	 	 	 print("Unforseen Error!")
+  elif (choice == 4):
+  # Display all products of the table
+	 	
+	 	 try:
+	 	 	 mycursor.execute("SELECT * FROM %s”%current_table)
+			
+	 	 	 data = mycursor.fetchall()
+	 	 	 for x in data:
+	 	 	 	 print(x)
+	 	 except:
+	 	 	 print("Unforseen Error!")
+  elif (choice == 5):
+  # Add a new product
+	 	
+	 	 try:
+			
+	 	 	 ID = int(input("Enter Product ID: "))
+	 	 	 Name = str(input(“Enter Product Name: “))
+	 	 	 Quantity = int(input("Enter Product Qunatity: "))
+	 	 	 Price = float(input("Enter Price of One Product: "))
+	 	 	 Total_price = Qunatity * Price
+	 	 	 sql = "INSERT INTO %s VALUES (%d,'%s',%d,%f)"%(current_table, Product_ID, Product_Name, Qunatity, Total_price)
+	 	 	 mycursor.execute(sql)
+	 	 	 db.commit()
+	 	 except:
+	 	 	 print("Unforseen Error!")
+  elif (choice == 6):
+  # Delete product
+	 	 try:
+	 	 	 ID = int(input("Enter Product ID to be removed: "))
+	 	 	 sql = "DELETE FROM %s WHERE Product_ID = %d"%(current_table, ID)	 	 	
+	 	 	 cursor.execute(sql)
+	 	 	 db.commit()
+	 	 except:
+	 	 	 print("Unforseen Error!")
+  elif (choice == 7):
+  # Display the total amount
+	 	 sql = "SELECT sum(Total_price) FROM %s"%(current_table)
+	 	 cursor.execute(sql)
+	 	 print("The Total Bill Amount = ", cursor)
+	 	 print("\n")
+	 	 print("Thank you for visiting!")
+  elif (choice == 8):
+  # Exit from the system
+	 	 break
+  else:
+  # Choice is invalid
+	 	 Print("Enter a valid choice!")
+db.close()
